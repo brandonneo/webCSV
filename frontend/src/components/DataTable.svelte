@@ -4,6 +4,8 @@
   import type { Data } from '../types'; // Adjust based on your type definitions
   import UpdateModal from './UpdateModal.svelte';
 
+
+
   let showModal = false;
   let currentItem: null;
 
@@ -54,7 +56,9 @@
           <td>{item.email}</td>
           <td>{item.body}</td>
         </tr>
-        <button on:click={() => handleEdit(item)}>Update</button>
+        <!-- <Button on:click={() => handleEdit(item)}>Update</Button>
+          <Button on:click={() => handleDelete(item.id)}>Remove</Button> -->
+          <button on:click={() => handleEdit(item)}>Update</button>
         <button on:click={() => handleDelete(item.id)}>Remove</button>
       {/each}
     </tbody>
