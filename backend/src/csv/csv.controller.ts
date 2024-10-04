@@ -20,7 +20,7 @@ import { Response } from 'express'; // Import Response type from express
 import * as fs from 'fs'; // Import fs module
 import * as csv from 'csv-parser'; // Import csv-parser module
 import { diskStorage } from 'multer'; // Import diskStorage from multer
-import { v4 as uuidv4 } from 'uuid'; // For unique filenames
+import { v4 as uuuidv4 } from 'uuid'; // For unique filenames
 
 @Controller('csv')
 export class CsvController {
@@ -28,46 +28,54 @@ export class CsvController {
 
   @Post('upload')
   @UseInterceptors(
-      FileInterceptor('file', {
-          storage: diskStorage({
-              destination: './uploads', // Folder to save uploaded files
-              filename: (req, file, cb) => {
-                  const uniqueSuffix = uuidv4(); // Create a unique filename
-                  const ext = file.originalname.split('.').pop(); // Get file extension
-                  cb(null, `${uniqueSuffix}.${ext}`); // Set filename
-              },
-          }),
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads', // Folder to save uploaded files
+        filename: (req, file, cb) => {
+          const uniqueSuffix = uuuidv4(); // Create a unique filename
+          const ext = file.originalname.split('.').pop(); // Get file extension
+          cb(null, `${uniqueSuffix}.${ext}`); // Set filename
+        },
       }),
+    }),
   )
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
-      if (!file) {
-          throw new Error('File not found');
-      }
+    if (!file) {
+      throw new Error('File not found');
+    }
 
-      const results: CreateDataDto[] = [];
+    const results: CreateDataDto[] = [];
 
-      fs.createReadStream(file.path) // Now file.path should be defined
-          .pipe(csv())
-          .on('data', (data) => results.push(data))
-          .on('end', async () => {
-              await Promise.all(results.map(result => this.csvService.create(result)));
-          });
+    fs.createReadStream(file.path) // Now file.path should be defined
+      .pipe(csv())
+      .on('data', (data) => results.push(data))
+      .on('end', async () => {
+        await Promise.all(
+          results.map((result) => this.csvService.create(result)),
+        );
+      });
 
-      return { message: 'Upload successful' }; // Return a response
+    return { message: 'Upload successful' }; // Return a response
   }
 
   @Get()
-  async findAll(@Query('page') page: number = 1, @Query('pageSize') pageSize: number = 10) {
+  async findAll(
+    @Query('page') page: number = 1,
+    @Query('pageSize') pageSize: number = 10,
+  ) {
     return this.csvService.findAll(page, pageSize);
   }
 
-  @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateDataDto: CreateDataDto) {
-    return this.csvService.update(+id, updateDataDto);
+  @Patch('update/:uid')
+  async update(
+    @Param('uid') uid: string,
+    @Body() updateDataDto: CreateDataDto,
+  ) {
+    return this.csvService.update(+uid, updateDataDto);
   }
 
-  @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return this.csvService.remove(+id);
+  @Delete('delete/:uid')
+  async remove(@Param('uid') uid: string) {
+    return this.csvService.remove(+uid);
   }
 }

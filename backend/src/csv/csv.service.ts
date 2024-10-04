@@ -12,9 +12,13 @@ export class CsvService {
     @InjectRepository(Data)
     private readonly dataRepository: Repository<Data>, // Inject the Data repository
   ) {}
-  async create(dataDto: CreateDataDto): Promise<Data> {
-    const data = this.dataRepository.create(dataDto); // Create an instance of the entity
-    return this.dataRepository.save(data); // Save to the database
+  // async create(dataDto: CreateDataDto): Promise<Data> {
+  //   const data = this.dataRepository.create(dataDto); // Create an instance of the entity
+  //   return this.dataRepository.save(data); // Save to the database
+  // }
+  async create(createDataDto: CreateDataDto) {
+    const data = this.dataRepository.create(createDataDto);
+    return await this.dataRepository.save(data);
   }
   // async processCsv(fileBuffer: Buffer) {
   //   const results: Data[] = []; // Change to your Data type
@@ -49,26 +53,25 @@ export class CsvService {
   //     });
   // }
 
-
-    // Find all entries
+  // Find all entries
   // Modify the findAll method to accept pagination parameters
   async findAll(page: number, pageSize: number): Promise<Data[]> {
     const [results, total] = await this.dataRepository.findAndCount({
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
-    
+
     return results; // Return the paginated results
   }
-  
-    // Update an entry
-    async update(id: number, updateData: Partial<Data>): Promise<Data> {
-      await this.dataRepository.update(id, updateData); // Update the record by ID
-      return this.dataRepository.findOneBy({ id }); // Return the updated record
-    }
-  
-    // Remove an entry
-    async remove(id: number): Promise<void> {
-      await this.dataRepository.delete(id); // Delete the record by ID
-    }
+
+  // Update an entry
+  async update(uid: number, updateData: Partial<Data>): Promise<Data> {
+    await this.dataRepository.update(uid, updateData); // Update the record by ID
+    return this.dataRepository.findOneBy({ uid }); // Return the updated record
+  }
+
+  // Remove an entry
+  async remove(uid: number): Promise<void> {
+    await this.dataRepository.delete(uid); // Delete the record by ID
+  }
 }

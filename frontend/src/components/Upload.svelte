@@ -19,12 +19,13 @@
       errorMessage = null; // Reset error message
   
       try {
-        const response = await fetch('http://localhost:3000/csv/upload', {
+        const response = await fetch('http://localhost:3001/csv/upload', {
           method: 'POST',
           body: formData,
         });
   
         if (response.ok) {
+          console.log(response);
           // Handle success
           dispatch('uploadSuccess');
           alert('Upload successful!'); // Notify user

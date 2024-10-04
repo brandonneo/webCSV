@@ -1,9 +1,13 @@
 // src/csv/csv.dto.ts
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateDataDto {
+  @IsOptional() // Make postId optional
+  @IsString()
+  postId: string | null;
+
   @IsNotEmpty()
-  postId: number;
+  readonly id: number; // CSV 'id'
 
   @IsNotEmpty()
   name: string;

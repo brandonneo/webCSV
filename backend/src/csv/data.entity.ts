@@ -3,11 +3,14 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Data {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn() // Generate a UUID as primary key
+  uid: number;
 
-  @Column()
-  postId: number;
+  @Column({ nullable: true }) // Allow null values for postId
+  postId: string | null;
+
+  @Column() // This will store the 'id' from the CSV
+  id: number;
 
   @Column()
   name: string;
@@ -15,6 +18,6 @@ export class Data {
   @Column()
   email: string;
 
-  @Column()
+  @Column('text')
   body: string;
 }

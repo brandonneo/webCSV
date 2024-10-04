@@ -10,7 +10,7 @@ import { Data } from './csv/data.entity'; // Ensure the correct import
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: '',
+      password: 'password',
       database: 'csv_upload',
       entities: [Data],
       synchronize: true,
