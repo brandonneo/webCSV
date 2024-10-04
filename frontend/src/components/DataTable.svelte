@@ -5,7 +5,7 @@
   import UpdateModal from './UpdateModal.svelte';
 
   let showModal = false;
-  let currentItem: any;
+  let currentItem: null;
 
   // Fetch data on component mount
   onMount(() => {
@@ -19,18 +19,18 @@
     }
   };
 
-  const handleUpdate = (item: any) => {
+  const handleEdit = (item) => {
     currentItem = item;
     showModal = true;
   };
 
   const handleModalClose = () => {
     showModal = false;
-    currentItem = null; // Reset current item when modal closes
   };
 
-  const handleModalUpdate = async (updatedItem: any) => {
-    await updateData(updatedItem.id, updatedItem);
+  const handleModalUpdate = (event) => {
+    updateData(currentItem.id, event.detail); // Update data
+    showModal = false; // Close modal after update
   };
 </script>
 
@@ -54,12 +54,12 @@
           <td>{item.email}</td>
           <td>{item.body}</td>
         </tr>
-        <button on:click={() => handleUpdate(item)}>Update</button>
+        <button on:click={() => handleEdit(item)}>Update</button>
         <button on:click={() => handleDelete(item.id)}>Remove</button>
       {/each}
     </tbody>
   </table>
-  {#if showModal && currentItem}
+  {#if showModal}
   <UpdateModal 
     item={currentItem} 
     on:close={handleModalClose} 
